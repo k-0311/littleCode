@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  class App {
+    static _modules = []
+    constructor(options) {
+      this.options = options
+      this._init()
+    }
+    _init() {
+      App._modules.map(item => {
+        item.install && typeof item.install === 'function' && item.install(this)
+      })
+    }
+    static use(plugin) {
+      // Array.isArray(plugins) ? plugins.map(item => App.use(item)) : App._modules.push(plugins)
+      if (App._modules.indexOf(plugin) > -1) {
+        return this
+      }
+      const args = [...arguments]
+      args.splice(0, 1, this)
+      if (typeof plugin.install === 'function') {
+        plugin.install.apply(plugin, args)
+      } else if (typeof plugin === 'function') {
+        plugin.apply(null, args)
+      }
+      App._modules.push(plugin)
+      return this
+    }
+  }
+
+  class Plugin {
+    constructor(options) {
+
+    }
+    install(App, ...args) {
+      
+    }
+  }
+  let plugin = new Plugin()
+
+  App.use(plugin, 1, 5, 4, 94, 974, 94, 9)
+
+  new App({ name: 'raven', outfit: 'ubi' })
+</script>
+
+</html>
