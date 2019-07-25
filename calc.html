@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+  class FormatError extends SyntaxError {
+    constructor(message) {
+      super(message);
+      this.name = this.constructor.name;
+    }
+  }
+  let err = new FormatError('test err')
+  // console.log(err.message); // formatting error
+  // console.log(err.name); // FormatError
+  // console.log(err.stack); // stack
+  // console.log(err instanceof FormatError); // true
+  // console.log(err instanceof SyntaxError); // true（因为它继承自 SyntaxError）
+
+
+
+  //3个数排列
+  const tes = (arr) => {
+    let res = []
+    while (arr.length > 2) {
+      let one = arr.shift()
+      let temp = arr.slice()
+      while (temp.length > 1) {
+        let two = temp.shift()
+        res.push(...temp.map(item => [one, two, item]))
+      }
+    }
+    return res
+  }
+
+
+  let arr = Array.from({ length: 1013 }, (_, i) => i + 1)
+  /* 利用Set的特性无脑往里放就行了,当到达目标值后自动返回结果
+    优点：简洁明了，概率相等
+    缺点：当目标数量越接近原数据数量，性能越差
+*/
+  const setEle = (arr, size) => {
+    const set = new Set()
+    while (set.size < size) {
+      set.add(arr[Math.floor(Math.random() * arr.length)])
+    }
+    return [...set]
+  }
+  // console.log(setEle(arr, 1000))
+  /* 洗牌算法：
+    1.生成一个0 - arr.length 的随机数
+    2.交换该随机数位置元素和数组的最后一个元素，并把该随机位置的元素放入结果数组
+    3.生成一个0 - arr.length - 1 的随机数
+    4.交换该随机数位置元素和数组的倒数第二个元素，并把该随机位置的元素放入结果数组
+    依次类推，直至取完所需的目标个元素
+    优点：O(n)，一次遍历就能获取到所有数，而且概率都是相等的
+    缺点：改变了原数据的排列顺序
+*/
+  function shuffle(arr, size) {
+    let result = []
+    for (let i = 0; i < size; i++) {
+      const luckDog = Math.floor(Math.random() * (arr.length - i))
+      const item = arr[luckDog]
+      result.push(item)
+      arr[luckDog] = arr[arr.length - 1 - i]
+      arr[arr.length - 1 - i] = item
+    }
+    return result
+  }
+  // console.log(shuffle(arr, 10))
+
+  /* 分治算法：
+    1.将总数分成目标分
+    2.然后从每份中随机抽取
+    优点：空间换时间，减少遍历次数
+    缺点：如果不能整除将会导致最后一份概率不相等
+*/
+  const divide = (arr, num) => {
+    let size = arr.length % num > 0 ? Math.floor(arr.length / num) + 1 : arr.length / num;
+    let res = []
+    for (i = 1; i < num + 1; i++) {
+      let temp = arr.slice((i - 1) * size, i * size)
+      res.push(temp[Math.floor(Math.random() * temp.length)])
+    }
+    return res
+  }
+  console.log(divide(arr, 10))
+
+
+  // for (x = 1; x <= 9; x++) {
+  //   var y = 20 - 2 * x;
+  //   var z = 30 - x - y;
+  //   if (3 * x + 2 * y + z == 50) {
+  //     console.log(x,y,z)
+  //   }
+  // }
+
+
+</script>
+
+</html>
