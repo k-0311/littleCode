@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" id="input">
+</body>
+<script>
+  "use strict";
+  let list = [
+    { id: 1, name: '部门A', parentId: 0 },
+    { id: 2, name: '部门B', parentId: 0 },
+    { id: 3, name: '部门C', parentId: 1 },
+    { id: 4, name: '部门D', parentId: 1 },
+    { id: 5, name: '部门E', parentId: 2 },
+    { id: 6, name: '部门F', parentId: 3 },
+    { id: 7, name: '部门G', parentId: 2 },
+    { id: 8, name: '部门H', parentId: 10 },
+    { id: 9, name: '部门H', parentId: 10 },
+    { id: 10, name: '部门B', parentId: 0 }
+  ];
+  function convert(list) {
+    const res = []
+    const map = list.reduce((res, v) => (res[v.id] = v, res), {})
+    //注意此处！map中的值是引用类型，因此和传入的 list 中的每一项指向同一块内存地址
+    for (const item of list) {
+      if (item.parentId === 0) {
+        res.push(item) //
+        continue
+      }
+      if (item.parentId in map) {
+        const parent = map[item.parentId]
+        parent.children = parent.children || [] //因此修改 map 里的值时对应的 item 也发生了改变
+        parent.children.push(item)
+      }
+    }
+    return res
+  }
+  // let treeList = convert(list)
+  // console.log(treeList)
+  const tarId = '6'
+  function findId(data, tarId, parentId = []) {
+    return data.reduce((acc, item) =>
+      acc.concat(item.id == tarId
+        ? [...parentId, item.id]
+        : item.children
+          ? findId(item.children, tarId, [...parentId, item.id])
+          : [])
+      , [])
+  }
+  // let parentList = findId(treeList, tarId)
+  // console.log(parentList)
+
+
+  function debounce(func, delay = 1000) {
+    let timer
+    return function () {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        func.apply(this, arguments)
+      }, delay)
+    }
+  }
+
+  let input = document.getElementById('input')
+  let tes = debounce(function(){ console.log(this) })
+  input.addEventListener('input', tes)
+</script>
+
+</html>
