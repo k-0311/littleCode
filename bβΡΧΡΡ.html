@@ -14,16 +14,9 @@
       background-color: pink;
       height: 30px;
     }
-
-    .a {}
-
     .b {
       margin: auto;
       margin-left: 0;
-    }
-    .c {
-      /* margin-right: 0; */
-      /* margin: auto; */
     }
   </style>
 </head>
@@ -90,7 +83,7 @@
     }
   }
 
-  const deepFlat = (obj) => {
+  const deepFlat = obj => {
     let res = {}
     function deep(obj, prekey = '') {
       for (let key of Object.keys(obj)) {
@@ -104,8 +97,29 @@
     deep(obj)
     return res
   }
-  // console.log(deepFlat(entry))
+  console.log(deepFlat(entry))
 
+  const deepTree = obj => {
+    let res = {}
+    for (const [key, val] of Object.entries(obj)) {
+      let arr = key.split('.')
+      deep(res, arr, val)
+    }
+
+    function deep(obj, arr, val) {
+      let key = arr.shift()
+      if(key in obj){
+        deep(obj[key], arr, val)
+      }else if (arr.length > 0) {
+        obj[key] = {}
+        deep(obj[key], arr, val)
+      }else{
+        obj[key] = val
+      }
+    }
+    return res
+  }
+  console.log(deepTree(deepFlat(entry)))
 </script>
 
 </html>
