@@ -14,6 +14,7 @@
       background-color: pink;
       height: 30px;
     }
+
     .b {
       margin: auto;
       margin-left: 0;
@@ -108,18 +109,35 @@
 
     function deep(obj, arr, val) {
       let key = arr.shift()
-      if(key in obj){
+      if (key in obj) {
         deep(obj[key], arr, val)
-      }else if (arr.length > 0) {
+      } else if (arr.length > 0) {
         obj[key] = {}
         deep(obj[key], arr, val)
-      }else{
+      } else {
         obj[key] = val
       }
     }
     return res
   }
   console.log(deepTree(deepFlat(entry)))
+
+
+  function queryQuotaNums(money = 0) {
+    const quotas = [100, 50, 20, 10, 5, 1]
+    if (money <= 0) return {}
+    res = {}
+    for (const val of quotas) {
+      if ((money / val) < 1) {
+        continue
+      }
+      res[val] = Math.floor(money / val)
+      money = money % val
+      if (money == 0) break
+    }
+    return res
+  }
+  console.log(queryQuotaNums(101))
 </script>
 
 </html>
