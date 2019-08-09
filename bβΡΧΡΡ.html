@@ -98,7 +98,7 @@
     deep(obj)
     return res
   }
-  console.log(deepFlat(entry))
+  // console.log(deepFlat(entry))
 
   const deepTree = obj => {
     let res = {}
@@ -120,7 +120,7 @@
     }
     return res
   }
-  console.log(deepTree(deepFlat(entry)))
+  // console.log(deepTree(deepFlat(entry)))
 
 
   function queryQuotaNums(money = 0) {
@@ -137,7 +137,43 @@
     }
     return res
   }
-  console.log(queryQuotaNums(101))
+  // console.log(queryQuotaNums(101))
+
+
+  //2013     1
+  //201*10 + 3    202
+  //20*100 + 13   204
+  //2*1000 + 013   200
+  //0*10000 = 2013 - 1000
+
+  // 
+  //2013     2
+  //201*10 + 3    202
+  //20*100 + 13   200
+  //2*1000 + 013  200 
+  //0*10000 = 2013 14
+  function countOne(n, factor = 1) {
+    let count = 0;
+    let next = parseInt(n / factor);
+    while (next !== 0) {
+      var lower = n - next * factor
+      var curr = next % 10;
+      var high = parseInt(n / (10 * factor));
+
+      if (curr === 0) {
+        count += high * factor;
+      } else if (curr === 1) {
+        count += high * factor + lower + 1
+      } else {
+        count += (high + 1) * factor
+      }
+
+      factor *= 10;
+      next = parseInt(n / factor);
+    }
+    return count;
+  }
+  console.log(countOne(2013, 2))
 </script>
 
 </html>
