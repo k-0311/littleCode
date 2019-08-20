@@ -173,7 +173,37 @@
     }
     return count;
   }
-  console.log(countOne(2013, 2))
+  // console.log(countOne(2013, 2))
+
+  const sortPoke = (arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) => {
+    let res = []
+    let i = 1
+    while (arr.length > 0) {
+      if (i % 2 > 0) {
+        res.push(arr.shift())
+      } else {
+        arr.push(arr.shift())
+      }
+      i++
+    }
+    return res
+  }
+
+  function originPoke(arr) {
+    let i = 1
+    let res = []
+    while (arr.length) {
+      if (i % 2) {
+        res.unshift(arr.pop())
+      } else {
+        res.unshift(res.pop())
+      }
+      i++
+    }
+    return res
+  }
+  console.log(sortPoke())
+  console.log(originPoke(sortPoke()))
 </script>
 
 </html>
