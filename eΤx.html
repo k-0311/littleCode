@@ -1,0 +1,124 @@
+<!--
+ * @Author: Raven
+ * @Date: 2019-07-24 11:29:39
+ * @msg: 
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+  // setTimeout(() => { console.log(performance.now()) }, 0)
+  const perf = () => {
+    var performance = window.performance || window.msPerformance || window.webkitPerformance;
+    if (performance) {
+      let = { redirectStart, redirectEnd, domainLookupStart, domainLookupEnd, connectStart, connectEnd, responseStart, responseEnd, domInteractive, domComplete, navigationStart, responseStart, navigationStart, domContentLoadedEventEnd, navigationStart, loadEventEnd } = performance.timing
+      console.log(`重定向耗时：${redirectEnd - redirectStart} ms`)
+      console.log(`DNS查询耗时 ：${domainLookupEnd - domainLookupStart} ms`)
+      console.log(`TCP链接耗时 ：${connectEnd - connectStart} ms`)
+      console.log(`HTTP请求耗时 ：${responseEnd - responseStart} ms`)
+      console.log(`解析dom树耗时 ：${domComplete - domInteractive} ms`)
+      console.log(`白屏时间 ：${responseStart - navigationStart} ms`)
+      console.log(`DOMready时间 ：${domContentLoadedEventEnd - navigationStart} ms`)
+      console.log(`onload时间：${loadEventEnd - navigationStart} ms`)
+    }
+  }
+  // perf()
+
+
+  function findLongest(str) {
+    if (!str) return {}
+    let count = 0
+    let maxCount = 0
+    let cur = str[0]
+    let res = {}
+    for (let i = 0; i < str.length; i++) {
+      const s = str[i]
+      if (s === cur) {
+        count++
+        if (count > maxCount) {
+          res = { [s]: count }
+          maxCount = count
+        }
+        if (count === maxCount) {
+          res[s] = count
+        }
+      } else {
+        count = 1
+        cur = s
+      }
+    }
+    return res
+  }
+
+  // console.log(findLongest('abbkejsbcccwbbqaa'))
+
+  'abbkejsbcccwbbqaa'.match(/(\w)\1+/g)
+
+  const debounce = (fn, time) => {
+    let timer;
+    return function (...args) {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        fn.apply(this, args)
+      }, time)
+    }
+  }
+
+  const thresholds = (fn, def) => {
+    let timer;
+    let start = new Date
+    let threshold = def || 300;
+    return function (...args) {
+      let curr = new Date() - 0;
+      clearTimeout(timer)
+      if (curr - star > threshold) {
+        fn.apply(this, args)
+        start = curr
+      } else {
+        setTimeout(() => {
+          fn.apply(this, args)
+        }, threshold);//不进行操作后在执行一次
+      }
+    }
+  }
+
+  function* feibo() {
+    let [pre, cur] = [0, 1]
+    while (true) {
+      yield cur;//注意分号，不然将会导致无限循环
+      [pre, cur] = [cur, pre + cur]
+    }
+  }
+
+  // for (let n of feibo()) {
+  //   if (n > 100) break;
+  //   console.log(n);
+  // }
+
+  let tesArr = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
+  let target = [1, 2, 3, 4]
+  while (target.length > 0) {
+    let tar = target.shift()
+    for (const [index, val] of tesArr.entries()) {
+      if (val.id === tar) {
+        tesArr.splice(index, 1)
+        break
+      }
+    }
+  }
+
+  console.log(tesArr)
+</script>
+
+</html>
