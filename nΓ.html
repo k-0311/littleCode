@@ -12,7 +12,64 @@
 
 </body>
 <script>
-  
+  let obj = {
+    a: {
+      b: {
+        c: 1,
+        d: 2
+      },
+      e: {
+        f: 3,
+        g: 4
+      }
+    },
+    q: {
+      w: {
+        e: 6,
+        r: 7
+      },
+      j: {
+        k: 8,
+        l: 9
+      }
+    }
+  }
+
+  let arr = [1, [2, [3]], 4, [5, [6]]]
+
+  const flat = (arr = [], mode = 'loop') => {
+    if (mode !== 'loop') {
+      return [].concat(...arr.map(item => Array.isArray(item) ? flat(item) : item))
+    }
+    while (arr.some(item => Array.isArray(item))) {
+      arr = [].concat(...arr)
+    }
+    return arr
+  }
+  console.log(flat(arr))
+
+  let J = "aA"
+  let S = "aAAbbbb"
+  const ruby = (rb, rk) => rk.split('').filter(_ => rb.includes(_)).length
+  console.log(ruby(J, S))
+
+
+  let nums = [4, 64, 96, 47, 84, 1, 23, 7, 94, 63, 67]
+
+  const kunm = (nums, k = 3) => {
+    return nums.reduce((acc, item) => {
+      if (acc.length < 4) {
+        acc.push(item)
+        return acc
+      }
+      if ((acc.sort((a, b) => a - b))[acc.length - 1] > item) {
+        console.log(acc)
+        acc.splice(-1, 1, item)
+      }
+      return acc
+    }, [])
+  }
+  console.log(kunm(nums))
 </script>
 
 </html>
