@@ -46,12 +46,12 @@
     }
     return arr
   }
-  console.log(flat(arr))
+  // console.log(flat(arr))
 
   let J = "aA"
   let S = "aAAbbbb"
   const ruby = (rb, rk) => rk.split('').filter(_ => rb.includes(_)).length
-  console.log(ruby(J, S))
+  // console.log(ruby(J, S))
 
 
   let nums = [4, 64, 96, 47, 84, 1, 23, 7, 94, 63, 67]
@@ -69,7 +69,14 @@
       return acc
     }, [])
   }
-  console.log(kunm(nums))
+  // console.log(kunm(nums))
+
+  let trball = '红蓝蓝黄红黄蓝红红黄红'
+  const sortBalls = (arr = []) => {
+    const obj = {'黄':0,'红':1,'蓝':2}
+    return arr.sort((a,b)=>obj[a]-obj[b])
+  }
+  console.log(sortBalls(trball.split('')))
 </script>
 
 </html>
