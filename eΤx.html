@@ -86,7 +86,7 @@
         fn.apply(this, args)
         start = curr
       } else {
-        setTimeout(() => {
+        timer = setTimeout(() => {
           fn.apply(this, args)
         }, threshold);//不进行操作后在执行一次
       }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+  export class LastTime {
+    constructor({ start = 0, end = 0, timeBack = null } = {}) {
+      this._timeDiff = (end - start) / 1000
+      this._timeBack = timeBack
+      this._timer = null
+      this._pause = false
+      this._startTime()
+    }
+    _startTime() {
+      if (this._timeDiff <= 0) {
+        this.stopTime()
+        return
+      }
+      this._timer = setTimeout(() => {
+        this._timeBack && this._timeBack(this._compute())
+        this._startTime()
+      }, 1000)
+    }
+    _compute() {
+      this._timeDiff--
+      let day = Math.floor(this._timeDiff / 60 / 60 / 24).toString().padStart(2, 0)
+      let hour = Math.floor(this._timeDiff / 60 / 60 % 24).toString().padStart(2, 0)
+      let minute = Math.floor(this._timeDiff / 60 % 60).toString().padStart(2, 0)
+      let seconds = Math.floor(this._timeDiff % 60).toString().padStart(2, 0)
+      return {
+        day,
+        hour,
+        minute,
+        seconds
+      }
+    }
+    reStart() {
+      if (this._pause) {
+        this._startTime()
+        this._pause = false
+      }
+    }
+    stopTime() {
+      this._pause = true
+      clearTimeout(this._timer)
+    }
+  }
+</script>
+
+</html>
