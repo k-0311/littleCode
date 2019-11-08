@@ -58,18 +58,25 @@
   // console.log(parentList)
 
 
-  function debounce(func, delay = 1000) {
-    let timer
-    return function () {
+  const debounce = (fn, def, thresholdsMode = false) => {
+    let timer;
+    let prev = new Date
+    return function (...args) {
       clearTimeout(timer)
-      timer = setTimeout(() => {
-        func.apply(this, arguments)
-      }, delay)
+      let curr = new Date() - 0;
+      if (thresholdsMode && curr - prev > def) {
+        fn.apply(this, args)
+        prev = curr
+      } else {
+        timer = setTimeout(() => {
+          fn.apply(this, args)
+        }, def);//不进行操作后在执行一次
+      }
     }
   }
 
   let input = document.getElementById('input')
-  let tes = debounce(function(){ console.log(this) })
+  let tes = debounce(function () { console.log(this) },1000, true)
   input.addEventListener('input', tes)
 </script>
 
