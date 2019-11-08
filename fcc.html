@@ -86,12 +86,14 @@
   }
 
   const intersectionOfMultiArray = (...arr) => {
-    if(arr.length < 2) return arr[0]
+    if (arr.length < 2) return arr[0]
     return arr.reduce((prev, curr) => {
       return prev.filter(item => curr.includes(item))
     })
   }
-  console.log(intersectionOfMultiArray([1, 2, 3, 8], [2, 3, 4, 8], [3, 8]))
+  // console.log(intersectionOfMultiArray([1, 2, 3, 8], [2, 3, 4, 8], [3, 8]))
+
+  
 </script>
 
 </html>

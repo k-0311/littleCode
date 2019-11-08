@@ -77,18 +77,17 @@
 
   const thresholds = (fn, def) => {
     let timer;
-    let start = new Date
-    let threshold = def || 300;
+    let prev = new Date
     return function (...args) {
-      let curr = new Date() - 0;
       clearTimeout(timer)
-      if (curr - star > threshold) {
+      let curr = new Date() - 0;
+      if (curr - prev > def) {
         fn.apply(this, args)
-        start = curr
+        prev = curr
       } else {
         timer = setTimeout(() => {
           fn.apply(this, args)
-        }, threshold);//不进行操作后在执行一次
+        }, def);//不进行操作后在执行一次
       }
     }
   }
