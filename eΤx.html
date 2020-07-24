@@ -63,7 +63,7 @@
 
   // console.log(findLongest('abbkejsbcccwbbqaa'))
 
-  'abbkejsbcccwbbqaa'.match(/(\w)\1+/g)
+  'abbkejsbcccwbbqaa'.match(/(\w)\1+/g) //  \1代表分组1匹配的文本
 
   const debounce = (fn, time) => {
     let timer;
@@ -92,32 +92,47 @@
     }
   }
 
-  function* feibo() {
+  function feibo1(num) {
     let [pre, cur] = [0, 1]
-    while (true) {
-      yield cur;//注意分号，不然将会导致无限循环
-      [pre, cur] = [cur, pre + cur]
+    while (num) {
+      num--
+      [pre, cur] = [cur, cur + pre]
     }
+    return cur
   }
+  // console.log(feibo1(10))
 
-  // for (let n of feibo()) {
-  //   if (n > 100) break;
-  //   console.log(n);
-  // }
-
-  let tesArr = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]
-  let target = [1, 2, 3, 4]
-  while (target.length > 0) {
-    let tar = target.shift()
-    for (const [index, val] of tesArr.entries()) {
-      if (val.id === tar) {
-        tesArr.splice(index, 1)
-        break
+  function compareArr(
+    arr1 = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }],
+    arr2 = [1, 2, 4]
+  ) {
+    while (arr2.length > 0) {
+      let tar = arr2.shift()
+      for (const [index, val] of arr1.entries()) {
+        if (val.id === tar) {
+          arr1.splice(index, 1)
+          break
+        }
       }
     }
+    return arr1
   }
+  // console.log(compareArr())
 
-  // console.log(tesArr)
+  function strMatch1(str) {
+    let arr = str.match(/\w+/g)
+    let res
+    while (arr.length) {
+      let cur = arr.pop()
+      let temp = { value: cur }
+      if (res) {
+        temp.children = res
+      }
+      res = temp
+    }
+    return res
+  }
+  // console.log(strMatch1('1[2[3[4]]]'))
 </script>
 
 </html>

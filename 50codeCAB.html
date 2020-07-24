@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  Function.prototype.myCall = function (ctx, ...args) {
+    const fn = Symbol('临时属性')
+    ctx[fn] = this // obj[x] = test
+    ctx[fn](...args) //  obj.test()
+    delete ctx[fn] //
+  }
+
+  Function.prototype.myApply = function (ctx, args) {
+    const fn = Symbol('临时属性')
+    ctx[fn] = this // obj[x] = test
+    ctx[fn](...args) //  obj.test()
+    delete ctx[fn] //
+  }
+
+  Function.prototype.myBind = function (ctx, ...args) {
+    let that = this
+    const bindFn = function (..._args) {
+      const isNew = this instanceof bindFn //this 是否是 bindFn 的实例，也就是 new 调用
+      const _ctx = isNew ? this : ctx // new 调用就绑定到 this 上,否则就绑定到传入的 ctx 上
+      that.myCall(_ctx, ...args, ..._args)
+    }
+    bindFn.prototype = Object.create(that.prototype) // 复制源函数的 prototype 给新返回的函数
+    return bindFn
+  }
+</script>
+
+</html>

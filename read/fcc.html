@@ -65,26 +65,6 @@
   const reverseWord = str => str.split(' ').map(word => word.split('').reverse().join('')).join(' ')
   // console.log(reverseWord('fuck tr and vs'))
 
-
-  Function.prototype.myCall = function (ctx, ...args) {
-    const fn = Symbol('临时属性')
-    ctx[fn] = this // obj[x] = test
-    ctx[fn](...args) //  obj.test()
-    delete ctx[fn] //
-  }
-
-
-  Function.prototype.myBind = function (ctx, ...args) {
-    let that = this
-    const bindFn = function (..._args) {
-      const isNew = this instanceof bindFn //this 是否是 bindFn 的实例，也就是 new 调用
-      const _ctx = isNew ? this : ctx // new 调用就绑定到 this 上,否则就绑定到传入的 ctx 上
-      that.myCall(_ctx, ...args, ..._args)
-    }
-    bindFn.prototype = Object.create(that.prototype) // 复制源函数的 prototype 给新返回的函数
-    return bindFn
-  }
-
   const intersectionOfMultiArray = (...arr) => {
     if (arr.length < 2) return arr[0]
     return arr.reduce((prev, curr) => {
@@ -93,7 +73,6 @@
   }
   // console.log(intersectionOfMultiArray([1, 2, 3, 8], [2, 3, 4, 8], [3, 8]))
 
-  
 </script>
 
 </html>
