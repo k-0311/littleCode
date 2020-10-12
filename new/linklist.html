@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+  const arr1 = Array.from({ length: 5 }, (_, index) => ({ cid: (index * index * 2) }))
+  const arr2 = Array.from({ length: 5 }, (_, index) => ({ cid: (index + index + 1) }))
+  const createLinkList = (arr, cycle = false) => {
+    arr.forEach((item, index) => {
+      const prev = arr[index - 1]
+      if (!prev) return
+      prev.next = item
+      if (index == arr.length - 1) item.next = cycle ? arr[0] : null
+    })
+    return arr[0]
+  }
+
+  const link1 = createLinkList(arr1)
+  const link2 = createLinkList(arr2)
+
+  /**合并两个有序链表
+  * 使用递归来解题
+  * 将两个链表头部较小的一个与剩下的元素合并
+  * 当两条链表中的一条为空时终止递归
+ */
+  const margeTwoLink = (l1, l2) => {
+    if (l1 === null) return l2
+    if (l2 === null) return l1
+    if (l1.cid < l2.cid) {
+      l1.next = margeTwoLink(l1.next, l2)
+      return l1
+    } else {
+      l2.next = margeTwoLink(l1, l2.next)
+      return l2
+    }
+  }
+  // console.log(margeTwoLink(link1, link2))
+
+  /**环形链表
+   * *1.双指针法
+   * 使用快慢不同的两个指针遍历，快指针一次走两步，慢指针一次走一步
+   * 如果没有环，快指针会先到达尾部，返回 false
+   * 如果有环，则一定会相遇
+   * *2.标记法
+   * 遍历链表，通过标记判断是否有环，如果标记存在则有环。
+  */
+  const isCycle1 = (head) => {
+    if (!head || !head.next) return false
+    let fast = head.next
+    let slow = head
+    while (slow !== fast) {
+      if (!fast || !fast.next) return false
+      fast = fast.next.next
+      slow = slow.next
+    }
+    return true
+  }
+  const isCycle2 = (head) => {
+    while (head) {
+      if (head.flag) return true
+      head.flag = true
+      head = head.next
+    }
+    return false
+  }
+  // console.log(isCycle1(link1), isCycle2(link2))
+
+  /**反转链表(1=>2=>3 to 3=>2=>1)
+  * 迭代
+  * 初始化前驱节点为 null，初始化目标节点为头节点
+  * 遍历链表，记录 next 节点并反转指针
+  * prev 和 curr 指针分别往前移动一步
+  * 反转结束后，prev 成为新链表的头节点
+ */
+  const reverseLink = (head) => {
+    let prev = null
+    let curr = head
+    while (curr !== null) {
+      let next = curr.next;
+      curr.next = prev;
+      prev = curr;
+      curr = next;
+    }
+    return prev
+  }
+  // console.log(reverse(link1))
+
+  /**删除结点的倒数第 N 个节点
+   * 删除倒数第 n 个结点，我们需要找到倒数第 n+1 个结点，删除其后继结点即可
+   * 添加 prev 结点，也称其为哨兵结点，处理边界问题
+   * 使用双指针法，快指针先走 n+1 步，然后快慢指针同步往前走，直到 fast.next 为 null
+   * 删除倒数第 n 个结点，返回 prev.next
+  */
+  const removeSomeNode = (head, n) => {
+    let prev = { cid: '哨兵节点' };
+    prev.next = head;
+    let fast = prev;
+    let slow = prev;
+    while (n--) {
+      fast = fast.next;
+    }
+    while (fast && fast.next) {
+      fast = fast.next;
+      slow = slow.next;
+    }
+    slow.next = slow.next.next;
+    return prev.next;
+  }
+  // console.log(removeSomeNode(link1, 2))
+
+
+  /**求链表的中间结点
+   * 双指针法
+   * 使用快慢不同的两个指针遍历，快指针一次走两步，慢指针一次走一步
+   * 当快指针到达终点时，慢指针刚好走到中间
+  */
+  const middleNode = (head) => {
+    let fast = head
+    let slow = head
+    while (fast?.next) {
+      fast = fast.next.next
+      slow = slow.next
+    }
+    return slow
+  }
+  // console.log(middleNode(link1))
+</script>
+
+</html>
