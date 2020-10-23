@@ -35,6 +35,23 @@
     bindFn.prototype = Object.create(that.prototype) // 复制源函数的 prototype 给新返回的函数
     return bindFn
   }
+
+  function myNew(fn, ...args) {
+    const obj = {}
+    fn.myCall(obj, ...args)
+    obj.__proto__ = fn.prototype
+    return obj
+  }
+
+  function myInstanceof(myObject, myClass) {
+    if (!myObject || !myObject.__proto__ || !myClass || !myClass.prototype) return false
+    let current = myObject
+    while (current) {
+      if (current.__proto__ == myClass.prototype) return true
+      current = myObject.__proto__
+    }
+    return false
+  }
 </script>
 
 </html>
