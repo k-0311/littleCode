@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body></body>
+  <script>
+    function Node(data, alias = null, left = null, right = null) {
+      this.data = data
+      this.alias = alias
+      this.left = left
+      this.right = right
+    }
+
+    Node.prototype = {
+      show: function () {
+        console.log(this.data)
+      }
+    }
+
+    function Tree() {
+      this.root = null
+    }
+    Tree.prototype = {
+      insert: function (data, alias) {
+        var node = new Node(data, alias, null, null)
+        if (!this.root) {
+          this.root = node
+          return
+        }
+        var current = this.root
+        var parent = null
+        while (current) {
+          parent = current
+          if (data < parent.data) {
+            current = current.left
+            if (!current) {
+              parent.left = node
+              return
+            }
+          } else {
+            current = current.right
+            if (!current) {
+              parent.right = node
+              return
+            }
+          }
+        }
+      },
+      preOrder: function (node) {
+        if (node) {
+          node.show()
+          this.preOrder(node.left)
+          this.preOrder(node.right)
+        }
+      },
+      middleOrder: function (node) {
+        if (node) {
+          this.middleOrder(node.left)
+          node.show()
+          this.middleOrder(node.right)
+        }
+      },
+      laterOrder: function (node) {
+        if (node) {
+          this.laterOrder(node.left)
+          this.laterOrder(node.right)
+          node.show()
+        }
+      },
+      getMin: function () {
+        var current = this.root
+        while (current) {
+          if (!current.left) {
+            return current
+          }
+          current = current.left
+        }
+      },
+      getMax: function () {
+        var current = this.root
+        while (current) {
+          if (!current.right) {
+            return current
+          }
+          current = current.right
+        }
+      },
+      getDeep: function (node, deep) {
+        deep = deep || 0
+        if (node == null) {
+          return deep
+        }
+        deep++
+        var dpLeft = this.getDeep(node.left, deep)
+        var dpRight = this.getDeep(node.right, deep)
+        return Math.max(dpLeft, dpRight)
+      },
+      getNode(data, node) {
+        if (node) {
+          if (data == node.data) {
+            return node
+          } else if (data < node.data) {
+            return this.getNode(data, node.left)
+          } else if (data > node.data) {
+            return this.getNode(data, node.right)
+          }
+        } else {
+          return null
+        }
+      }
+    }
+
+    let t = new Tree()
+    // t.insert(1)
+    // t.insert(10)
+    // t.insert(8)
+    // t.insert(6)
+    // t.insert(5)
+    // t.insert(7)
+    // t.insert(8)
+    // t.insert(6)
+    // t.insert(9)
+    // t.insert(0)
+    // t.insert(12)
+
+    t.insert(4, 'A')
+    t.insert(2, 'B')
+    t.insert(1, 'D')
+    t.insert(3, 'E')
+    t.insert(5, 'C')
+    t.insert(6, 'F')
+
+    /**前序遍历
+     **先打印该节点，然后是它的左子树，最后右子树（根->左->右）
+     */
+    const prevNode = root => {
+      const list = []
+      const stack = []
+      if (root) stack.push(root)
+      while (stack.length > 0) {
+        const curNode = stack.pop()
+        list.push(curNode.data)
+        if (curNode.right !== null) {
+          stack.push(curNode.right)
+        }
+        if (curNode.left !== null) {
+          stack.push(curNode.left)
+        }
+      }
+      return list
+    }
+    // console.log(prevNode(t.root))
+
+    /**中序遍历
+     **先打印它的左子树，然后是该节点，最后右子树（左->根->右）
+     */
+    const midNode = root => {
+      let list = []
+      let stack = []
+      let node = root
+      while (node || stack.length) {
+        // 遍历左子树
+        while (node) {
+          stack.push(node)
+          node = node.left
+        }
+        node = stack.pop()
+        list.push(node.data)
+        node = node.right
+      }
+      return list
+    }
+    console.log(midNode(t.root))
+
+    /**后序遍历
+     **先打印它的左子树，然后是右子树，最后该节点（左->右->根）
+     */
+    /** 解题思路
+     * *后序遍历是左右根
+     * *而前序遍历是根左右
+     * *如果我们把前序遍历的 list.push(node.val) 变更为 list.unshift(node.val) （遍历结果逆序），那么遍历顺序就由 【根左右】 变更为 【右左根】
+     * *然后我们仅需将 【右左根】 变更为 【左右根】 即可完成后序遍
+     */
+    const nextNode = root => {
+      const stack = []
+      const list = []
+      if (root) stack.push(root)
+      while (stack.length > 0) {
+        const node = stack.pop()
+        list.unshift(node.alias)
+        //根据栈的先进后出原理，
+        //只需将【左右】的进入顺序与前序交换下就行了
+        if (node.left !== null) {
+          stack.push(node.left)
+        }
+        if (node.right !== null) {
+          stack.push(node.right)
+        }
+      }
+      return list
+    }
+    // console.log(nextNode(t.root))
+  </script>
+</html>

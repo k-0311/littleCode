@@ -16,14 +16,14 @@
     //   return Promise.resolve().then(foo1)
     // }
 
-    function mySetI() {
-      mySetI.timer = setTimeout(() => {
+    function mySetInterval() {
+      mySetInterval.timer = setTimeout(() => {
         arguments[0]()
-        mySetI(...arguments)
+        mySetInterval(...arguments)
       }, arguments[1])
     }
-    mySetI.clear = function () {
-      clearTimeout(mySetI.timer)
+    mySetInterval.clear = function () {
+      clearTimeout(mySetInterval.timer)
     }
 
     function sortBall(str) {

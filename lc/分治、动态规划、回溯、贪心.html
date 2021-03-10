@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const mergeSort = function (arr) {
+      const len = arr.length
+      if (len > 1) {
+        // 对半分解
+        const middle = len >> 1
+        const left = arr.slice(0, middle)
+        const right = arr.slice(middle, len)
+        let i = 0
+        let j = 0
+        let k = 0
+        // 分别对左右进行排序
+        mergeSort(left)
+        mergeSort(right)
+        while (i < left.length && j < right.length) {
+          if (left[i] < right[j]) {
+            arr[k] = left[i]
+            i++
+          } else {
+            arr[k] = right[j]
+            j++
+          }
+          k++
+        }
+        // 检查余项
+        while (i < left.length) {
+          arr[k] = left[i]
+          i++
+          k++
+        }
+        while (j < right.length) {
+          arr[k] = right[j]
+          j++
+          k++
+        }
+      }
+      return arr
+    }
+    // console.log(mergeSort([8, 964, 41, 64, 64, 61, 984, 61]))
+
+    //70.爬楼梯 https://leetcode-cn.com/problems/climbing-stairs/
+    /*本问题其实常规解法可以分成多个子问题，爬第 n 阶楼梯的方法数量，等于 '爬梯方式' 之和【爬1阶，爬2阶，爬3阶】
+      爬上 n−1 阶楼梯的方法数量。因为再爬1阶就能到第n阶
+      爬上 n−2 阶楼梯的方法数量，因为再爬2阶就能到第n阶
+      爬上 n−3 阶楼梯的方法数量，因为再爬2阶就能到第n阶
+      因此可以总结出，爬上 n 阶楼梯的方法和公式等于 dp[n] = dp[n − 1] + dp[n − 2] + dp[n - 3]
+    */
+    const climbStairs = function (n) {
+      let [a1, a2, a3] = [1, 1, 2]
+      while (n > 2) {
+        n--
+        ;[a3, a2, a1] = [a3 + a2 + a1, a3, a2]
+      }
+      return a3
+    }
+    // console.log(climbStairs(8))
+
+    //455.分发饼干 https://leetcode-cn.com/problems/assign-cookies/description/
+    /**
+     **贪心算法 + 双指针求解。
+     **给一个孩子的饼干应当尽量小并且能满足孩子，大的留来满足胃口大的孩子
+     **因为胃口小的孩子最容易得到满足，所以优先满足胃口小的孩子需求
+     **按照从小到大的顺序使用饼干尝试是否可满足某个孩子
+     **当饼干 j >= 胃口 i 时，饼干满足胃口，更新满足的孩子数并移动指针  i++ j++ res++
+     **当饼干 j < 胃口 i 时，饼干不能满足胃口，需要换大的 j++
+     *! 关键点：将需求因子 g 和 s 分别从小到大进行排序，使用贪心思想配合双指针，每个饼干只尝试一次，成功则换下一个孩子来尝试。
+     */
+    const findContentChildren = (g, s) => {
+      g = g.sort((a, b) => a - b)
+      s = s.sort((a, b) => a - b)
+      let gi = 0 // 胃口值
+      let sj = 0 // 饼干尺寸
+      let res = 0
+      while (gi < g.length && sj < s.lenght) {
+        if (s[sj] >= g[gi]) {
+          gi++
+          sj++
+          res++
+        } else {
+          sj++
+        }
+      }
+      return res
+    }
+
+    const letterCombinations = function (digits) {
+      if (!digits) {
+        return []
+      }
+      const len = digits.length
+      const map = new Map()
+      map.set('2', 'abc')
+      map.set('3', 'def')
+      map.set('4', 'ghi')
+      map.set('5', 'jkl')
+      map.set('6', 'mno')
+      map.set('7', 'pqrs')
+      map.set('8', 'tuv')
+      map.set('9', 'wxyz')
+      const result = []
+
+      function generate(i, str) {
+        if (i == len) {
+          result.push(str)
+          return
+        }
+        const tmp = map.get(digits[i])
+        for (let r = 0; r < tmp.length; r++) {
+          generate(i + 1, str + tmp[r])
+        }
+      }
+      generate(0, '')
+      return result
+    }
+
+    letterCombinations('234')
+    console.log("letterCombinations('234')", letterCombinations('234'))
+  </script>
+</html>

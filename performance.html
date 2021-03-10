@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      var whiteScreen = new Date() - performance.timing.navigationStart
+      // 通过 domLoading 和 navigationStart 也可以
+      whiteScreen = performance.timing.domLoading - performance.timing.navigationStart
+    </script>
+  </head>
+  <body></body>
+  <script>
+    const perf = () => {
+      let performance =
+        window.performance || window.msPerformance || window.webkitPerformance
+      if (performance) {
+        let = {
+          redirectStart,
+          redirectEnd,
+          domainLookupStart,
+          domainLookupEnd,
+          connectStart,
+          connectEnd,
+          responseStart,
+          responseEnd,
+          domInteractive,
+          domComplete,
+          navigationStart,
+          responseStart,
+          navigationStart,
+          domContentLoadedEventEnd,
+          navigationStart,
+          loadEventEnd
+        } = performance.timing
+        console.log(`重定向耗时：${redirectEnd - redirectStart} ms`)
+        console.log(`DNS查询耗时 ：${domainLookupEnd - domainLookupStart} ms`)
+        console.log(`TCP链接耗时 ：${connectEnd - connectStart} ms`)
+        console.log(`HTTP请求耗时 ：${responseEnd - responseStart} ms`)
+        console.log(`解析dom树耗时 ：${domComplete - domInteractive} ms`)
+        console.log(`白屏时间 ：${responseStart - navigationStart} ms`)
+        console.log(
+          `DOMready时间 ：${domContentLoadedEventEnd - navigationStart} ms`
+        )
+        console.log(`onload时间：${loadEventEnd - navigationStart} ms`)
+      }
+    }
+    // perf()
+    // 收集性能信息
+    const getPerformance = () => {
+      if (!window.performance) return
+      const timing = window.performance.timing
+      const performance = {
+        // 重定向耗时
+        redirect: timing.redirectEnd - timing.redirectStart,
+        // 白屏时间
+        whiteScreen: whiteScreen,
+        // DOM 渲染耗时
+        dom: timing.domComplete - timing.domLoading,
+        // 页面加载耗时
+        load: timing.loadEventEnd - timing.navigationStart,
+        // 页面卸载耗时
+        unload: timing.unloadEventEnd - timing.unloadEventStart,
+        // 请求耗时
+        request: timing.responseEnd - timing.requestStart,
+        // 获取性能信息时当前时间
+        time: new Date().getTime()
+      }
+
+      return performance
+    }
+    // 获取资源信息
+    const getResources = () => {
+      if (!window.performance) return
+      const data = window.performance.getEntriesByType('resource')
+      const resource = {
+        xmlhttprequest: [],
+        css: [],
+        other: [],
+        script: [],
+        img: [],
+        link: [],
+        fetch: [],
+        // 获取资源信息时当前时间
+        time: new Date().getTime()
+      }
+
+      data.forEach(item => {
+        const arry = resource[item.initiatorType]
+        arry &&
+          arry.push({
+            // 资源的名称
+            name: item.name,
+            // 资源加载耗时
+            duration: item.duration.toFixed(2),
+            // 资源大小
+            size: item.transferSize,
+            // 资源所用协议
+            protocol: item.nextHopProtocol
+          })
+      })
+
+      return resource
+    }
+  </script>
+</html>

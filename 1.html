@@ -1,178 +1,179 @@
 <!-- <body onload="setInterval(()=>document.body.innerHTML=new Date().toLocaleString().slice(9,19))"></body> -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
+  <body>
+    <b id="count"></b>
+    <button onclick="increase()">+</button>
+    <button onclick="decrease()">-</button>
+    <input type="text" id="text" />
+  </body>
+  <script>
+    var input = document.getElementById('text')
+    input.addEventListener('compositionstart', function () {
+      console.log(1)
+    })
+    input.addEventListener('compositionupdate', function () {
+      console.log(2)
+    })
+    input.addEventListener('compositionend', function () {
+      console.log(3)
+    })
 
-<body>
-  <b id="count"></b>
-  <button onclick="increase()">+</button>
-  <button onclick="decrease()">-</button>
-  <input type="text" id="text">
-</body>
-<script>
-  var input = document.getElementById('text')
-  input.addEventListener('compositionstart', function () {
-    console.log(1)
-  })
-  input.addEventListener('compositionupdate', function () {
-    console.log(2)
-  })
-  input.addEventListener('compositionend', function () {
-    console.log(3)
-  })
-
-  class LazyManClass {
-    constructor(name) {
-      console.log(`Hi I am ${name}`)
-      this.taskQueue = []
-      setTimeout(() => {
-        this.next()
-      }, 0)
+    class LazyManClass {
+      constructor(name) {
+        console.log(`Hi I am ${name}`)
+        this.taskQueue = []
+        setTimeout(() => {
+          this.next()
+        }, 0)
+      }
+      eat(name) {
+        var that = this
+        var fn = (function (n) {
+          return function () {
+            // console.log(`I am eating ${n}`)
+            that.next()
+          }
+        })(name)
+        this.taskQueue.push(fn)
+        return this
+      }
+      sleep(time) {
+        var that = this
+        var fn = (function (t) {
+          return function () {
+            setTimeout(() => {
+              // console.log(`等待了${t}秒...`)
+              that.next()
+            }, t * 1000)
+          }
+        })(time)
+        this.taskQueue.push(fn)
+        return this
+      }
+      next() {
+        let fn = this.taskQueue.shift()
+        fn && fn()
+      }
     }
-    eat(name) {
-      var that = this;
-      var fn = (function (n) {
-        return function () {
-          // console.log(`I am eating ${n}`)
-          that.next();
+
+    class Son extends LazyManClass {
+      constructor(...args) {
+        super(...args)
+      }
+      static abs() {}
+    }
+
+    let arr = [
+      ...new Set(
+        Array.from(
+          { length: 10 },
+          () => Math.floor(Math.random() * 101) + 1
+        ).sort()
+      )
+    ]
+    function formArray(arr) {
+      const sortedArr = Array.from(new Set(arr)).sort((a, b) => a - b)
+      const map = new Map()
+      sortedArr.forEach(v => {
+        const key = Math.floor(v / 10)
+        const group = (map.get(key) || []).concat(v)
+        map.set(key, group)
+      })
+      return [...map.values()]
+    }
+    function formArray1(arr) {
+      const sortedArr = Array.from(new Set(arr)).sort((a, b) => a - b)
+      return sortedArr.reduce((acc, cur) => {
+        const lastArr = acc.slice().pop() || [] //注意！ slice 只是进行了一次浅拷贝，因此 pop 抛出的值还是指向'源地址'因此改变 lastArr 时候 'acc里面' 的值也会跟着改变
+        const lastVal = lastArr.slice().pop()
+        if (lastVal != null && cur - lastVal === 1) {
+          lastArr.push(cur)
+        } else {
+          acc.push([cur])
         }
-      })(name);
-      this.taskQueue.push(fn);
-      return this;
+        return acc
+      }, [])
     }
-    sleep(time) {
-      var that = this
-      var fn = (function (t) {
-        return function () {
-          setTimeout(() => {
-            // console.log(`等待了${t}秒...`)
-            that.next();
-          }, t * 1000);
+
+    const data = { count: 0 }
+    const proxy = new Proxy(data, {
+      get(target, property) {
+        return target[property]
+      },
+      set(target, property, value) {
+        target[property] = value
+        render(value)
+      }
+    })
+    render(proxy.count)
+    function render(value) {
+      document.getElementById('count').innerHTML = value
+    }
+    function increase() {
+      proxy.count += 1
+    }
+    function decrease() {
+      proxy.count -= 1
+    }
+
+    const rotateArr = (arr, key) => {
+      if (key < 0) throw new Error('key must be positive integer')
+      if (arr.length == 0) throw new Error('arr is empty')
+      let step = key % arr.length
+      for (i = 0; i < step; i++) {
+        arr.unshift(arr.pop())
+      }
+      return arr
+    }
+
+    const rotateArr1 = (arr, k) => arr.splice(-(k % arr.length)).concat(arr)
+
+    // console.log(rotateArr1([1, 2, 3, 4, 5, 6, 7, 8, 9], 1))
+
+    function moveZeroToLast(arr) {
+      let index = 0
+      let len = arr.length
+      for (let i = 0; i < len; i++) {
+        if (arr[i] === 0) {
+          //通过index记住0的位置
+          index++
+        } else if (index !== 0) {
+          arr[i - index] = arr[i] //如果 index 存在就把当前值和 index位置的 0 调换
+          arr[i] = 0
         }
-      })(time);
-      this.taskQueue.push(fn);
-      return this;
-    }
-    next() {
-      let fn = this.taskQueue.shift()
-      fn && fn()
-    }
-  }
-
-  class Son extends LazyManClass {
-    constructor(...args) {
-      super(...args)
-    }
-    static abs() {
-
-    }
-  }
-
-  let arr = [...new Set(Array.from({ length: 10 }, () => Math.floor(Math.random() * 101) + 1).sort())]
-  function formArray(arr) {
-    const sortedArr = Array.from(new Set(arr)).sort((a, b) => a - b);
-    const map = new Map();
-    sortedArr.forEach((v) => {
-      const key = Math.floor(v / 10);
-      const group = (map.get(key) || []).concat(v);
-      map.set(key, group);
-    });
-    return [...map.values()];
-  }
-  function formArray1(arr) {
-    const sortedArr = Array.from(new Set(arr)).sort((a, b) => a - b);
-    return sortedArr.reduce((acc, cur) => {
-      const lastArr = acc.slice().pop() || [];//注意！ slice 只是进行了一次浅拷贝，因此 pop 抛出的值还是指向'源地址'因此改变 lastArr 时候 'acc里面' 的值也会跟着改变
-      const lastVal = lastArr.slice().pop();
-      if (lastVal != null && cur - lastVal === 1) {
-        lastArr.push(cur);
-      } else {
-        acc.push([cur]);
       }
-      return acc;
-    }, []);
-  }
-
-  const data = { count: 0 };
-  const proxy = new Proxy(data, {
-    get(target, property) {
-      return target[property];
-    },
-    set(target, property, value) {
-      target[property] = value;
-      render(value);
+      return arr
     }
-  });
-  render(proxy.count);
-  function render(value) {
-    document.getElementById('count').innerHTML = value;
-  }
-  function increase() {
-    proxy.count += 1;
-  }
-  function decrease() {
-    proxy.count -= 1;
-  }
+    console.log(moveZeroToLast([0, 3, 1, 0, 6, 4, 0, 8, 1]))
 
-  const rotateArr = (arr, key) => {
-    if (key < 0) throw new Error('key must be positive integer')
-    if (arr.length == 0) throw new Error('arr is empty')
-    let step = key % arr.length
-    for (i = 0; i < step; i++) {
-      arr.unshift(arr.pop())
-    }
-    return arr
-  }
+    const currying = fn =>
+      (judge = (...agrA) =>
+        agrA.length >= fn.length
+          ? fn(...agrA)
+          : (...argB) => judge(...agrA, ...argB))
 
-  const rotateArr1 = (arr, k) => arr.splice(-(k % arr.length)).concat(arr)
+    let a = currying((a, b, c, d, e) => {
+      return a + b + c + d + e
+    })
 
-  // console.log(rotateArr1([1, 2, 3, 4, 5, 6, 7, 8, 9], 1))
-
-  function moveZeroToLast(arr) {
-    let index = 0;
-    let len = arr.length;
-    for (let i = 0; i < len; i++) {
-      if (arr[i] === 0) {//通过index记住0的位置
-        index++;
-      } else if (index !== 0) {
-        arr[i - index] = arr[i];//如果 index 存在就把当前值和 index位置的 0 调换
-        arr[i] = 0;
+    const sum = (nums, target) => {
+      for (let [index, val] of nums.entries()) {
+        let tempIndex = nums.indexOf(target - val)
+        if (tempIndex > -1) {
+          return [index, tempIndex]
+          break
+        }
       }
     }
-    return arr;
-  }
-  // console.log(moveZeroToLast([0, 3, 1, 2, 0,]))
 
-
-
-  const currying = fn =>
-    judge = (...agrA) =>
-      agrA.length >= fn.length
-        ? fn(...agrA)
-        : (...argB) => judge(...agrA, ...argB)
-
-
-  let a = currying((a, b, c, d, e) => {
-    return a + b + c + d + e
-  })
-
-  const sum = (nums, target) => {
-    for (let [index, val] of nums.entries()) {
-      let tempIndex = nums.indexOf(target - val)
-      if (tempIndex > -1) {
-        return [index, tempIndex]
-        break
-      }
-    }
-  }
-
-  // console.log(sum([2, 11, 15, 7, 9, 8], 23))
-</script>
-
+    // console.log(sum([2, 11, 15, 7, 9, 8], 23))
+  </script>
 </html>

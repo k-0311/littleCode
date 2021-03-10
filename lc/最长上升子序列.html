@@ -8,52 +8,54 @@
   <body></body>
   <script>
     //给定一个无序的整数数组，找到其中最长上升子序列的长度
-    const arr = [10, 9, 2, 5, 3, 7, 101, 18, 5, 8, 12];
+    const arr = [10, 9, 2, 5, 3, 7, 101, 18, 5, 8, 12, 0]
 
     // 动态规划
     const lengthOfLIS = function (nums) {
-      let n = nums.length;
-      if (n == 0) return 0;
-      let dp = new Array(n).fill(1); //将 dp[i]初始化为 1，因为每个元素都是一个单独的子序列
+      let n = nums.length
+      if (n == 0) return 0
+      let dp = new Array(n).fill(1) //将 dp[i]初始化为 1，因为每个元素都是一个单独的子序列
       for (let i = 0; i < n; i++) {
         for (let j = 0; j < i; j++) {
           if (nums[j] < nums[i]) {
-            dp[i] = Math.max(dp[i], dp[j] + 1);
+            dp[i] = Math.max(dp[i], dp[j] + 1)
           }
         }
       }
-      return Math.max(...dp);
-    };
-
+      console.log('lengthOfLIS -> dp', dp)
+      return Math.max(...dp)
+    }
+    // lengthOfLIS(arr)
     // 贪心 + 二分查找
     const lengthOfLIS1 = function (nums) {
-      let len = nums.length;
-      if (len <= 1) return len;
-      let tails = [nums[0]];
+      let len = nums.length
+      if (len <= 1) return len
+      let tails = [nums[0]]
       for (let i = 0; i < len; i++) {
         // 当前遍历元素 nums[i] 大于 前一个递增子序列的 尾元素时，追加到后面即可
         if (nums[i] > tails[tails.length - 1]) {
-          tails.push(nums[i]);
+          tails.push(nums[i])
         } else {
           // 否则，查找递增子序列中第一个大于当前值的元素，用当前遍历元素 nums[i] 替换它
           // 递增序列，可以使用二分查找
-          let left = 0;
-          let right = tails.length - 1;
+          let left = 0
+          let right = tails.length - 1
           while (left < right) {
-            let mid = (left + right) >> 1;
+            let mid = (left + right) >> 1 //二进制右移一位
             if (tails[mid] < nums[i]) {
-              left = mid + 1;
+              left = mid + 1
             } else {
-              right = mid;
+              right = mid
             }
           }
-          tails[left] = nums[i];
+          tails[left] = nums[i]
         }
       }
-      return tails.length;
-    };
-    // 注意：这种方式被替换后组成的新数组不一定是解法一中正确结果的数组，但长度是一样的，不影响我们对此题求解。
-    /* 比如这种情况：[1, 4, 5, 2, 3, 7, 0]
+      console.log('lengthOfLIS1 -> tails', tails)
+      return tails.length
+    }
+    /* 注意：这种方式被替换后组成的新数组不一定是解法一中正确结果的数组，但长度是一样的，不影响我们对此题求解。
+      *比如这种情况：[1, 4, 5, 2, 3, 7, 0]
       tails = [1]
       tails = [1, 4]
       tails = [1, 4, 5]
@@ -63,46 +65,57 @@
       tails = [0, 2, 3, 7]
      */
     // 可以看到最后 tails 的长度是正确的，但是里面的值不正确，因为最后一步的替换破坏了子序列的性质。
+    // lengthOfLIS1(arr)
 
     function getSequence(arr) {
-      const p = arr.slice();
-      const result = [0];
-      let i, j, u, v, c;
-      const len = arr.length;
+      const p = arr.slice() // 拷贝一个数组 p
+      const result = [0]
+      let i, j, u, v, c
+      const len = arr.length
       for (i = 0; i < len; i++) {
-        const arrI = arr[i];
+        const arrI = arr[i]
+        // 排除等于 0 的情况
         if (arrI !== 0) {
-          j = result[result.length - 1];
+          j = result[result.length - 1]
+          // 与最后一项进行比较
           if (arr[j] < arrI) {
-            p[i] = j;
-            result.push(i);
-            continue;
+            p[i] = j // 最后一项与 p 对应的索引进行对应
+            result.push(i)
+            continue
           }
-          u = 0;
-          v = result.length - 1;
+          // arrI 比 arr[j] 小，使用二分查找找到后替换它
+          // 定义二分查找区间
+          u = 0
+          v = result.length - 1
+          // 开启二分查找
           while (u < v) {
-            c = ((u + v) / 2) | 0;
+            // 取整得到当前位置
+            c = ((u + v) / 2) | 0
             if (arr[result[c]] < arrI) {
-              u = c + 1;
+              u = c + 1
             } else {
-              v = c;
+              v = c
             }
           }
+          // 比较 => 替换
           if (arrI < arr[result[u]]) {
             if (u > 0) {
-              p[i] = result[u - 1];
+              p[i] = result[u - 1] // 正确的结果
             }
-            result[u] = i;
+            result[u] = i // 有可能替换会导致结果不正确，需要一个新数组 p 记录正确的结果
           }
         }
       }
-      u = result.length;
-      v = result[u - 1];
+      u = result.length
+      v = result[u - 1]
+      // 倒叙回溯 用 p 覆盖 result 进而找到最终正确的索引
       while (u-- > 0) {
-        result[u] = v;
-        v = p[v];
+        result[u] = v
+        v = p[v]
       }
-      return result;
+      return result //注意 result 为最长上升子序列的索引数组
     }
+    const res = getSequence(arr).map(i => arr[i])
+    console.log(res)
   </script>
 </html>

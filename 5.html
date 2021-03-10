@@ -18,24 +18,6 @@
 </body>
 <script>
 
-  // setTimeout(() => { console.log(performance.now()) }, 0)
-  const perf = () => {
-    var performance = window.performance || window.msPerformance || window.webkitPerformance;
-    if (performance) {
-      let = { redirectStart, redirectEnd, domainLookupStart, domainLookupEnd, connectStart, connectEnd, responseStart, responseEnd, domInteractive, domComplete, navigationStart, responseStart, navigationStart, domContentLoadedEventEnd, navigationStart, loadEventEnd } = performance.timing
-      console.log(`重定向耗时：${redirectEnd - redirectStart} ms`)
-      console.log(`DNS查询耗时 ：${domainLookupEnd - domainLookupStart} ms`)
-      console.log(`TCP链接耗时 ：${connectEnd - connectStart} ms`)
-      console.log(`HTTP请求耗时 ：${responseEnd - responseStart} ms`)
-      console.log(`解析dom树耗时 ：${domComplete - domInteractive} ms`)
-      console.log(`白屏时间 ：${responseStart - navigationStart} ms`)
-      console.log(`DOMready时间 ：${domContentLoadedEventEnd - navigationStart} ms`)
-      console.log(`onload时间：${loadEventEnd - navigationStart} ms`)
-    }
-  }
-  // perf()
-
-
   function findLongest(str) {
     if (!str) return {}
     let count = 0

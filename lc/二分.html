@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const search = function (nums, target) {
+      let start = 0
+      let end = nums.length - 1
+
+      while (start <= end) {
+        const mid = start + ((end - start) >> 1)
+        if (nums[mid] === target) {
+          return mid
+        }
+        // 左侧有序
+        if (nums[mid] >= nums[start]) {
+          // target 在 [start, mid] 之间
+          if (target >= nums[start] && target < nums[mid]) {
+            end = mid - 1
+          } else {
+            start = mid + 1
+          }
+        } else {
+          // 右侧有序
+          // target 在 [mid, end] 之间
+          if (target > nums[mid] && target <= nums[end]) {
+            start = mid + 1
+          } else {
+            end = mid - 1
+          }
+        }
+      }
+      return -1
+    }
+
+    console.log(search([1, 2, 3, 4, 5, 6, 7], 5))
+  </script>
+</html>

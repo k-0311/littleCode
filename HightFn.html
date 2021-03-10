@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    function composeKoa(middleware) {
+      return function () {
+        function dispatch(i) {
+          let fn = middleware[i]
+          if (!fn) return
+          fn(dispatch.bind(null, i + 1))
+        }
+        return dispatch(0)
+      }
+    }
+
+    function compose(...fns) {
+      return function (x) {
+        return fns.reduce((args, fn) => fn(args), x)
+        // return fns.reverse().reduce((args, fn) => fn(args), x) //从右开始
+      }
+    }
+
+    const curry = fn =>
+      (judge = (...args1) =>
+        args1.length >= fn.length
+          ? fn(...args1)
+          : (...args2) => judge(...args1, ...args2))
+
+    // ======================================================================
+    /* 什么是函子
+     * 容器：包含值和值的变形关系(这个变形关系就是函数)
+     * 函子：是一个特殊的容器，通过一个普通的对象来实现，该对象具有 map 方法，map方法可以运行一个函数对值进行处理(变形关系)
+     */
+    class Functor {
+      //Pointed 函子是实现了 of 静态方法的函子of 方法是为了避免使用 new 来创建对象，更深层的含义是of 方法用来把值放到上下文
+      //Context（把值放到容器中，使用 map 来处理值）
+      static of(value) {
+        return new Functor(value)
+      }
+      constructor(value) {
+        this._value = value
+      }
+      map(fn) {
+        return this.isNothing()
+          ? Functor.of(this._value)
+          : Functor.of(fn(this._value))
+      }
+      isNothing() {
+        return this._value === null || this._value === undefined
+      }
+    }
+    // 调用of的时候获得一个上下文，之后是在上下文中处理数据
+    Functor.of('hello world')
+      .map(x => x.toUpperCase())
+      .map(x => null)
+      .map(x => x.split(' '))
+
+    /* 什么是IO函子
+     * IO就是输入输出，IO 函子中的 _value 是一个函数，这里是把函数作为值来处理
+     * IO函子可以把不纯的动作存储到 _value 中，延迟执行这个不纯的操作(惰性执行)，包装当前的操作
+     * 把不纯的操作交给调用者来处理
+     */
+    class IOFunctor {
+      static of(value) {
+        return new IOFunctor(() => value) // of方法快速创建IO，返回一个函数，将来需要值的时候再调用函数
+      }
+      constructor(fn) {
+        this._value = fn // 传入的是一个函数
+      }
+      map(fn) {
+        return new IOFunctor(compose(fn, this._value)) // 这里用的是new一个新的构造函数，是为了把当前_value的函数和map传入的fn进行组合成新的函数
+      }
+    }
+    const params = { a: 1, b: 2, c: 3 }
+    const r = IOFunctor.of(params).map(p => p.a) // map需要传入一个函数，函数需要接收一个参数，这个参数就是of中传递的参数
+    console.log(r) // IOFunctor { _value: [Function] }
+    console.log(r._value()) // 上面只是组合函数，如果需要调用就执行
+
+    /* 什么是Monad函子(单子)
+     * Monad 函子是可以变扁的 Pointed 函子，用来解决IO函子嵌套问题，IO(IO(x))
+     * 一个函子如果具有 join 和 of 两个方法并遵守一些定律就是一个 Monad
+     */
+    class MonadFunctor {
+      static of(value) {
+        return new MonadFunctor(() => {
+          return value
+        })
+      }
+      constructor(fn) {
+        this._value = fn
+      }
+      map(fn) {
+        return new MonadFunctor(fp.flowRight(fn, this._value))
+      }
+      join() {
+        return this._value()
+      }
+      flatMap(fn) {
+        return this.map(fn).join() // 同时调用map和join方法
+      }
+    }
+  </script>
+</html>

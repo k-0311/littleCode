@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const arr = [1, 456, 6, 46, 16, 1, 64, 64, 96, 494, 4, 414, 6, 45, 4]
+
+    // const arr = [1, 8, 7, 9, 2]
+    const bubbleSort = function (arr) {
+      if (arr.length <= 1) return arr
+      const len = arr.length
+      for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len; j++) {
+          if (arr[i] < arr[j]) {
+            ;[arr[i], arr[j]] = [arr[j], arr[i]]
+          }
+        }
+      }
+      return arr
+    }
+    // console.log(bubbleSort(arr))
+    const quickSort = arr => {
+      const len = arr.length
+      if (len <= 1) return arr
+      const mid = len >> 1
+      const pivot = arr.splice(mid, 1)[0]
+      const left = []
+      const right = []
+      for (let i = 0; i < len - 1; i++) {
+        if (arr[i] > pivot) {
+          right.push(arr[i])
+        } else {
+          left.push(arr[i])
+        }
+      }
+      return [...quickSort(left), pivot, ...quickSort(right)]
+    }
+    // console.log(quickSort(arr))
+
+    const mergeSort = arr => {
+      let len = arr.length
+      if (len < 2) return arr
+      let mid = len >> 1
+      let left = arr.slice(0, mid)
+      let right = arr.slice(mid)
+      return merge(mergeSort(left), mergeSort(right))
+    }
+    const merge = (left, right) => {
+      const result = []
+      while (left.length > 0 && right.length > 0) {
+        if (left[0] <= right[0]) {
+          result.push(left.shift())
+        } else {
+          result.push(right.shift())
+        }
+      }
+      if (left.length) result.push(...left)
+      if (right.length) result.push(...right)
+      return result
+    }
+    // console.log(mergeSort(arr))
+
+    function heapSort(items) {
+      // 构建大顶堆
+      buildHeap(items, items.length - 1)
+      // 设置堆的初始有效序列长度为 items.length - 1
+      let heapSize = items.length - 1
+      for (var i = items.length - 1; i > 1; i--) {
+        // 交换堆顶元素与最后一个有效子元素
+        swap(items, 1, i)
+        // 有效序列长度减 1
+        heapSize--
+        // 堆化有效序列(有效序列长度为 currentHeapSize，抛除了最后一个元素)
+        heapify(items, heapSize, 1)
+      }
+      return items
+    }
+
+    // 原地建堆
+    // items: 原始序列
+    // heapSize: 有效序列长度
+    function buildHeap(items, heapSize) {
+      // 从最后一个非叶子节点开始，自上而下式堆化
+      for (let i = heapSize >> 1; i >= 1; --i) {
+        heapify(items, heapSize, i)
+      }
+    }
+    function heapify(items, heapSize, i) {
+      // 自上而下式堆化
+      while (true) {
+        var maxIndex = i
+        if (2 * i <= heapSize && items[i] < items[i * 2]) {
+          maxIndex = i * 2
+        }
+        if (2 * i + 1 <= heapSize && items[maxIndex] < items[i * 2 + 1]) {
+          maxIndex = i * 2 + 1
+        }
+        if (maxIndex === i) break
+        swap(items, i, maxIndex) // 交换
+        i = maxIndex
+      }
+    }
+    function swap(items, i, j) {
+      ;[items[i], items[j]] = [items[j], items[i]]
+    }
+    const items = [, 5, 2, 3, 4, 1]
+    // console.log(heapSort(items))
+
+    const minHeap = (items, heapSize) => {
+      for (let i = heapSize >> 1; i >= 1; --i) {
+        minHeapFiy(items, heapSize, i)
+      }
+      return items
+    }
+    const minHeapFiy = (items, heapSize, i) => {
+      while (i <= heapSize) {
+        if (items[i] > items[2 * i]) {
+          swap(items, i, i * 2)
+        }
+        i = i * 2
+      }
+    }
+    console.log(minHeap(items, items.length - 1))
+  </script>
+</html>
