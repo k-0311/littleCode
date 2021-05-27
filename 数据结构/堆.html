@@ -82,7 +82,7 @@
         if (i * 2 <= heapSize && items[i] < items[i * 2]) {
           minIndex = i * 2
         }
-        if (i * 2 + 1 <= heapSize && items[i] < items[i * 2 + 1]) {
+        if (i * 2 + 1 <= heapSize && items[minIndex] < items[i * 2 + 1]) {//注意是 items[minIndex]
           minIndex = i * 2 + 1
         }
         if (minIndex === i) break

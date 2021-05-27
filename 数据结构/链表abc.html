@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    class Node {
+      constructor(element) {
+        this.element = element
+        this.prev = null
+        this.next = null
+      }
+    }
+
+    function singleLink() {
+      // 初始头节点为 null
+      let head = null
+      // 链表长度
+      let length = 0
+      // 操作
+      this.append = function (element) {
+        let node = new Node(element)
+        let p = head
+        if (!head) {
+          head = node
+        } else {
+          while (p.next) {
+            p = p.next
+          }
+          p.next = node
+        }
+        length += 1
+      }
+      this.insert = function (position, element) {
+        if (position < 0 || position > length) return null
+
+        let node = new Node(element)
+        if (position === 0) {
+          node.next = head
+          head = node
+        } else {
+          let p = head
+          while (position > 1 && p.next) {
+            position--
+            p = p.next
+          }
+          node.next = p.next
+          p.next = node
+        }
+        length += 1
+      }
+      this.remove = function (element) {
+        if (head.element === element) {
+          head = head.next
+          length -= 1
+          return
+        }
+        let prev = head
+        let p = head.next
+        while (p) {
+          if (p.element === element) {
+            prev.next = p.next
+            break
+          }
+          prev = p
+          p = p.next
+        }
+        length -= 1
+      }
+      this.search = function (element) {
+        let p = head
+        if (!head) return false
+        while (p) {
+          if (p.element === element) return true
+          p = p.next
+        }
+        return false
+      }
+      this.getList = () => head
+      this.size = () => length
+      this.isEmpty = () => length === 0
+    }
+
+    let list = new singleLink()
+    for (let i = 0; i < 5; i++) {
+      list.append(i)
+    }
+    list.insert(0, 99)
+    // list.insert(3, 66)
+    // list.remove(2)
+    // console.log('list', list.getList())
+
+    function DoublyLinkedList() {
+      // 初始头节点为 null
+      let head = null
+      // 新增尾节点
+      let tail = null
+      // 链表长度
+      let length = 0
+      // 操作
+      this.search = function (element) {}
+      this.insert = function (position, element) {
+        if (position < 0 || position > length) return null
+        // 创建插入节点
+        let node = new Node(element)
+        if (position === 0) {
+          // 在第一个位置添加
+          if (!head) {
+            // 注意这里与单链表不同
+            head = node
+            tail = node
+          } else {
+            // 双向
+            node.next = head
+            head.prev = node
+            // head 指向新的头节点
+            head = node
+          }
+        } else if (position === length) {
+          // 插入到尾节点
+          tail.next = node
+          node.prev = tail
+          // tail 指向新的尾节点
+          tail = node
+        } else {
+          let prev = head
+          let curr = head
+          while (position > 1) {
+            position--
+            prev = curr
+            curr = curr.next
+          }
+          prev.next = node
+          node.next = curr
+          curr.prev = node
+          node.prev = prev
+        }
+        length += 1
+      }
+      this.removeAt = function (position) {
+        if (position < 0 || position > length || this.isEmpty) return null
+
+        if (position === 0) {
+          if (length === 1) {
+            head = null
+            tail = null
+          } else {
+            head = head.next
+            head.prev = null
+          }
+        } else if (position === length - 1) {
+          tail = tail.prev
+          tail.next = null
+        } else {
+          let prev = head
+          let curr = head
+          while (position > 1) {
+            position--
+            prev = curr
+            curr = curr.next
+          }
+          prev.next = curr.next
+          curr.next.prev = prev
+        }
+        length -= 1
+      }
+      this.isEmpty = () => length === 0
+      this.size = () => length
+      this.getList = () => head
+    }
+
+    // for (let i = 0; i < 5; i++) {
+    //   dlist.insert(i, i)
+    // }
+
+    function CircleLink() {
+      let head = null
+      let length = 0
+      this.search = function (element) {
+        let p = head
+        let index = 0
+        if (!head) return false
+        while (index < length || p) {
+          if (p.element === element) return true
+          p = p.next
+          index++
+        }
+        return false
+      }
+    }
+
+    const dlist1 = new DoublyLinkedList()
+    const dlist2 = new DoublyLinkedList()
+
+    let a = [1, 2, 4]
+    let b = [1, 3, 4]
+
+    a.map((_, i) => dlist1.insert(i, _))
+    b.map((_, i) => dlist2.insert(i, _))
+
+    console.log('list', dlist1.getList())
+    console.log('list', dlist2.getList())
+
+    const mergeLink = (link1, link2) => {
+      // let idx1 = 0
+      // let idx2 = 0
+    }
+  </script>
+</html>

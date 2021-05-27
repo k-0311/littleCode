@@ -37,21 +37,29 @@
     }
 
     function myNew(fn, ...args) {
-      const obj = {}
-      fn.myCall(obj, ...args)
-      obj.__proto__ = fn.prototype
+      const obj = {} //创建一个全新的对象
+      fn.myCall(obj, ...args) //this 指向新创建的对象
+      obj.__proto__ = fn.prototype //隐藏属性 链接到这个函数的 prototype 对象
       return obj
     }
 
-    function myInstanceof(myObject, myClass) {
-      if (!myObject || !myObject.__proto__ || !myClass || !myClass.prototype)
-        return false
-      let current = myObject
-      while (current) {
-        if (current.__proto__ == myClass.prototype) return true
-        current = myObject.__proto__
+    function myInstanceof(L, R) {
+      if (!L || !L.__proto__ || !R || !R.prototype) return false
+      while (L) {
+        if (L.__proto__ === R.prototype) return true
+        L = L.__proto__
       }
       return false
+    }
+
+    function mySetInterval() {
+      mySetInterval.timer = setTimeout(() => {
+        arguments[0]()
+        mySetInterval(...arguments)
+      }, arguments[1])
+    }
+    mySetInterval.clear = function () {
+      clearTimeout(mySetInterval.timer)
     }
   </script>
 </html>

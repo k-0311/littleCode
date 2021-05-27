@@ -125,7 +125,7 @@
     }
 
     const rotateArr = (arr, key) => {
-      if (key < 0) throw new Error('key must be positive integer')
+      if (key < 0) throw new Error('key must be Int')
       if (arr.length == 0) throw new Error('arr is empty')
       let step = key % arr.length
       for (i = 0; i < step; i++) {
@@ -153,16 +153,6 @@
       return arr
     }
     console.log(moveZeroToLast([0, 3, 1, 0, 6, 4, 0, 8, 1]))
-
-    const currying = fn =>
-      (judge = (...agrA) =>
-        agrA.length >= fn.length
-          ? fn(...agrA)
-          : (...argB) => judge(...agrA, ...argB))
-
-    let a = currying((a, b, c, d, e) => {
-      return a + b + c + d + e
-    })
 
     const sum = (nums, target) => {
       for (let [index, val] of nums.entries()) {

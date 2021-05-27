@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    //leetcode.155 https://leetcode-cn.com/problems/min-stack/
+    //设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈
+    class MinStack {
+      constructor() {
+        this.size = 0
+        this.mins = []
+        this.content = []
+      }
+      push(val) {
+        const curMin = this.mins[this.size - 1] ?? Infinity
+        this.content[this.size++] = val
+        this.mins[this.size - 1] = Math.min(curMin, val)
+        return this.size
+      }
+      pop() {
+        return this.content[--this.size] //改变 size 大小模拟出栈
+      }
+      top() {
+        return this.content[this.size - 1]
+      }
+      getMin() {
+        return this.mins[this.size - 1]
+      }
+      isEmpty() {
+        return this.size > 0
+      }
+      clear() {
+        this.size = 0
+      }
+    }
+
+    const stack = new MinStack()
+    stack.push(0)
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.pop()
+    stack.push(0)
+    stack.top()
+    console.log(stack.getMin())
+    console.log('stack', stack)
+  </script>
+</html>

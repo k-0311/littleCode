@@ -22,6 +22,21 @@
       }
       return arr
     }
+
+    function insertionSort(arr) {
+      var len = arr.length
+      var preIndex, current
+      for (var i = 1; i < len; i++) {
+        preIndex = i - 1
+        current = arr[i]
+        while (preIndex >= 0 && arr[preIndex] > current) {
+          arr[preIndex + 1] = arr[preIndex]
+          preIndex--
+        }
+        arr[preIndex + 1] = current
+      }
+      return arr
+    }
     // console.log(bubbleSort(arr))
     const quickSort = arr => {
       const len = arr.length
@@ -69,7 +84,7 @@
       buildHeap(items, items.length - 1)
       // 设置堆的初始有效序列长度为 items.length - 1
       let heapSize = items.length - 1
-      for (var i = items.length - 1; i > 1; i--) {
+      for (let i = items.length - 1; i > 1; i--) {
         // 交换堆顶元素与最后一个有效子元素
         swap(items, 1, i)
         // 有效序列长度减 1
@@ -84,7 +99,7 @@
     // items: 原始序列
     // heapSize: 有效序列长度
     function buildHeap(items, heapSize) {
-      // 从最后一个非叶子节点开始，自上而下式堆化
+      // 从最后一个非叶子节点开始，自上而下式堆化【 n/2 处】
       for (let i = heapSize >> 1; i >= 1; --i) {
         heapify(items, heapSize, i)
       }
@@ -92,7 +107,7 @@
     function heapify(items, heapSize, i) {
       // 自上而下式堆化
       while (true) {
-        var maxIndex = i
+        let maxIndex = i
         if (2 * i <= heapSize && items[i] < items[i * 2]) {
           maxIndex = i * 2
         }
@@ -110,20 +125,94 @@
     const items = [, 5, 2, 3, 4, 1]
     // console.log(heapSort(items))
 
-    const minHeap = (items, heapSize) => {
-      for (let i = heapSize >> 1; i >= 1; --i) {
-        minHeapFiy(items, heapSize, i)
-      }
-      return items
-    }
-    const minHeapFiy = (items, heapSize, i) => {
-      while (i <= heapSize) {
-        if (items[i] > items[2 * i]) {
-          swap(items, i, i * 2)
+    function countionSort(arr) {
+      let countArr = []
+      let newArr = []
+      let count = 0 // 辅助计数
+      // 把原始数组的元素, 当做索引值, 记录出现的次数
+      arr.forEach(function (value) {
+        if (!countArr[value]) {
+          countArr[value] = 0
         }
-        i = i * 2
-      }
+        countArr[value]++
+        count += 1
+      })
+      // 按照出现的次数, 把索引值 当做新数组的 value, unshift|push 正序|反序
+      countArr.forEach(function (value, index) {
+        if (value) {
+          while (value) {
+            newArr.push(index)
+            // newArr.unshift(index)
+            value--
+            count += 1
+          }
+        }
+      })
+      return newArr
     }
-    console.log(minHeap(items, items.length - 1))
+    // console.log(countionSort([12, 22, 123, 333, 0, 333, 555, 88]))
+
+    function bucketSort(arr, bucketSize) {
+      if (arr.length < 1) return arr
+      var i
+      var minValue = arr[0]
+      var maxValue = arr[0]
+      const result = []
+
+      for (i = 1; i < arr.length; i++) {
+        if (arr[i] < minValue) {
+          minValue = arr[i] // 输入数据的最小值
+        } else if (arr[i] > maxValue) {
+          maxValue = arr[i] // 输入数据的最大值
+        }
+      }
+
+      // 桶的初始化
+      var DEFAULT_BUCKET_SIZE = 5 // 设置桶的默认数量为5
+      bucketSize = bucketSize || DEFAULT_BUCKET_SIZE
+      var bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1
+      var buckets = new Array(bucketCount)
+      for (i = 0; i < buckets.length; i++) {
+        buckets[i] = []
+      }
+      // 利用映射函数将数据分配到各个桶中
+      for (i = 0; i < arr.length; i++) {
+        buckets[Math.floor((arr[i] - minValue) / bucketSize)].push(arr[i])
+      }
+      for (i = 0; i < buckets.length; i++) {
+        insertionSort(buckets[i]) // 对每个桶进行排序，这里使用了插入排序
+        for (var j = 0; j < buckets[i].length; j++) {
+          result.push(buckets[i][j])
+        }
+      }
+
+      return result
+    }
+    console.log(bucketSort([12, 22, 123, 333, 0, 333, 555, 88], 3))
+
+    function radixSort(arr, maxDigit) {
+      var counter = []
+      var mod = 10
+      var dev = 1
+      for (var i = 0; i < maxDigit; i++, dev *= 10, mod *= 10) {
+        for (var j = 0; j < arr.length; j++) {
+          var bucket = parseInt((arr[j] % mod) / dev)
+          if (counter[bucket] == null) {
+            counter[bucket] = []
+          }
+          counter[bucket].push(arr[j])
+        }
+        var pos = 0
+        for (var j = 0; j < counter.length; j++) {
+          var value = null
+          if (counter[j] != null) {
+            while ((value = counter[j].shift()) != null) {
+              arr[pos++] = value
+            }
+          }
+        }
+      }
+      return arr
+    }
   </script>
 </html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+
+
+
+
+    /**
+     * * n:股票数组长度
+     * * k:交易次数
+     * * i:天数，范围【0 <= i <= n - 1】
+     * * 0:不持有股票
+     * * 1:持有股票
+      */
+
+    /**
+     * !今天手中没有持有股票，有两种可能：
+     * *昨天没有持有，今天选择不操作。 对应: dp[i - 1][k][0]
+     * *昨天持有，今天卖出了，所以今天没有股票了。对应: dp[i - 1][k][1] + prices[i]
+     * todo状态转移方程: dp[i][k][0] = Math.max(dp[i - 1][k][0], dp[i - 1][k][1] + prices[i])
+     * !今天手中持有股票，有两种可能：
+     * *昨天手中持有股票，今天选择不操作。对应: dp[i - 1][k][1]
+     * *昨天没有持有股票，今天买入了。对应: dp[i - 1][k - 1][0] - prices[i]
+     * todo状态转移方程: dp[i][k][1] = Math.max(dp[i - 1][k][1], dp[i - 1][k - 1][0] - prices[i])
+     */
+
+    //121.买卖股票的最佳时机  https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/
+    const maxProfit = prices => {
+      let n = prices.length
+      let dp = Array.from(new Array(n), () => new Array(2))
+      dp[0][0] = 0
+      dp[0][1] = -prices[0]
+      for (let i = 1; i < n; i++) {
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i])
+        dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i])
+      }
+      return dp[n - 1][0]
+    }
+    console.log(maxProfit([10, 15, 13, 16, 20, 8, 16]))
+
+    const mpk = prices => {
+      let n = prices.length
+      let dp_i10 = 0
+      let dp_i11 = -prices[0]
+      let dp_i20 = 0
+      let dp_i21 = -prices[0]
+      for (let i = 1; i < n; i++) {
+        dp_i20 = Math.max(dp_i20, dp_i21 + prices[i])
+        dp_i21 = Math.max(dp_i21, dp_i10 - prices[i])
+        dp_i10 = Math.max(dp_i10, dp_i11 + prices[i])
+        dp_i11 = Math.max(dp_i11, -prices[i])
+      }
+      return dp_i20
+    }
+
+    const cd2 = prices => {
+      let n = prices.length
+      let dp = Array.from(new Array(n), () => new Array(2))
+      dp[0][0] = 0
+      dp[0][1] = -prices[0]
+      for (let i = 1; i < n; i++) {
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i])
+        dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i])
+      }
+      return dp[n - 1][0]
+    }
+  </script>
+</html>

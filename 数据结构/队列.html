@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    class Queue {
+      #items = []
+      constructor() {}
+      enqueue(e) {
+        this.#items.push(e)
+      }
+      dequeue() {
+        return this.#items.shift()
+      }
+      front() {
+        return this.#items[0]
+      }
+      clear() {
+        this.#items = []
+      }
+      isEmpty() {
+        return this.#items.length === 0
+      }
+      size() {
+        return this.#items.length
+      }
+    }
+
+    class Deque {
+      #items = []
+      addFrist(e) {
+        this.#items.unshift(e)
+      }
+      removeFrist() {
+        return this.#items.shift()
+      }
+      addLast(e) {
+        this.#items.push(e)
+      }
+      removeLast() {
+        return this.#items.pop()
+      }
+      clear() {
+        this.#items = []
+      }
+      isEmpty() {
+        return this.#items.length === 0
+      }
+      size() {
+        return this.#items.length
+      }
+    }
+
+    const reverseWord = (str = 'the sky is deep dark blue') => {
+      let left = 0
+      let right = str.length - 1
+      let word = ''
+      const queue = []
+
+      while (str.charAt(left) === ' ') left++
+      while (str.charAt(right) === ' ') right--
+      while (left <= right) {
+        let char = str.charAt(left)
+        if (char === ' ' && word) {
+          queue.unshift(word)
+          word = ''
+        } else if (char !== ' ') {
+          word += char
+        }
+        left++
+      }
+
+      queue.unshift(word)
+      return queue.join(' ')
+    }
+    console.log(reverseWord())
+  </script>
+</html>

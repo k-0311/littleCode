@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    const arr = [5, 3, 4, 7, 9, 6, 2, 5, 1, 4, 5, 1, 6, 2, 7, 3, 1, 8]
+    /**全局排序 O(nlogn)
+     * *sort() 內部采用 插入排序（长度小于10）或 归并排序
+     */
+    const topK1 = (arr, k = 7) => {
+      return arr.sort((a, b) => b - a)[k - 1]
+    }
+    // console.log('topK1', topK1(arr, 4))
+    /**局部冒泡排序 O(n*k)
+     * *每次将最大的数在最右边冒泡出来，只冒泡 k次即可
+     */
+    const topK2 = (arr, k = 7) => {
+      for (let i = 0; i < k; i++) {
+        // 提前退出冒泡循环的标识位
+        let flag = false
+        for (let j = 0; j < arr.length - i - 1; j++) {
+          if (arr[j] > arr[j + 1]) {
+            const temp = arr[j]
+            arr[j] = arr[j + 1]
+            arr[j + 1] = temp
+            flag = true
+            // 表示发生了数据交换
+          }
+        }
+        // 没有数据交换
+        if (!flag) break
+      }
+      console.log('topK2 -> arr', arr.slice(-k))
+      return arr[arr.length - k]
+    }
+    console.log(topK2(arr, 4))
+
+    /**构建大（小）顶堆，取堆顶(nlogk)
+     * *数组中取出 k 个元素构造一个小顶堆
+     */
+    const topK3 = (arr, k = 7) => {
+      const items = [, ...arr.slice(0, k)]
+      const list = arr.slice(k)
+      buildHeap(items, k) // 原地建堆，从后往前，自上而下式建小顶堆
+      list.forEach(item => {
+        if (item > items[1]) {
+          items[1] = item
+          heapfiy(items, k, 1)
+        }
+      })
+      console.log('topK3 -> items', items)
+      return items[1]
+    }
+    const buildHeap = (items, k) => {
+      if (k === 1) return
+      // 从最后一个非叶子节点(n/2)开始，自上而下式堆化
+      for (let i = k >> 1; i > 0; i--) {
+        heapfiy(items, k, i)
+      }
+    }
+    const heapfiy = (items, heapSize, i) => {
+      // 自上而下式堆化
+      while (true) {
+        let minIndex = i
+        if (i * 2 <= heapSize && items[i] > items[i * 2]) {
+          minIndex = i * 2
+        }
+        if (i * 2 + 1 <= heapSize && items[minIndex] > items[i * 2 + 1]) {
+          minIndex = i * 2 + 1
+        }
+        if (minIndex === i) break
+        swap(items, minIndex, i)
+        i = minIndex
+      }
+    }
+    const swap = (items, i, j) => {
+      ;[items[i], items[j]] = [items[j], items[i]]
+    }
+    console.log(topK3(arr, 4))
+  </script>
+</html>

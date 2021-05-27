@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    let num = 1101010
+    const changeToBinary = oNum => {
+      const arr = (oNum + '').split('')
+      const indexLen = arr.length - 1
+      return arr.reduceRight((res, num, index) => {
+        return res + num * 2 ** (indexLen - index)
+      }, 0)
+    }
+    console.log(changeToBinary(num))
+    console.log(parseInt('' + num, 2))
+
+    const killerQueen = n => {
+      const res = 0
+      const dfs = (n, row, cols, pie, na) => {
+        if (row >= n) {
+          res++
+          return
+        }
+        let bits = ~(cols | pie | na) & ((1 << n) - 1)
+        while (bits) {
+          let p = bits & -bits
+          dfs(n, row + 1, cols | p, (pie | p) << 1, (na | p) >> 1)
+          bits = bits & (bits - 1)
+        }
+      }
+      dfs(n, 0, 0, 0, 0)
+      return res
+    }
+  </script>
+</html>
