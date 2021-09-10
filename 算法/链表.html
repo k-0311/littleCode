@@ -8,6 +8,150 @@
   </head>
   <body></body>
   <script>
-    
+    // let arr1 = [1, 3, 5, 6, 7].map(v => ({ cid: v }))
+    // let arr2 = [4, 5, 7, 8, 8].map(v => ({ cid: v }))
+
+    let arr1 = [7, 1, 6].map(v => ({ cid: v }))
+    let arr2 = [5, 9, 6, 9].map(v => ({ cid: v }))
+
+    let arr3 = [1, 3, 5, 7, 9, 11, 13, 15, 17].map(v => ({ cid: v }))
+    let arr4 = [2, 8, 13, 15, 17].map(v => ({ cid: v }))
+
+    const createLinkList = (array, cycle = false) => {
+      const arr = JSON.parse(JSON.stringify(array))
+      arr.forEach((item, index) => {
+        const prev = arr[index - 1]
+        if (!prev) return
+        prev.next = item
+        if (index == arr.length - 1) item.next = cycle ? arr[0] : null
+      })
+      return arr[0]
+    }
+
+    const cycleLink = createLinkList(arr1, true)
+    const link1 = createLinkList(arr1)
+    const link2 = createLinkList(arr2)
+    const link3 = createLinkList(arr3)
+    const link4 = createLinkList(arr4)
+
+    const margeTwoLink = (link1, link2) => {
+      if (!link1) return link2
+      if (!link2) return link1
+
+      const head = { cid: '哨兵节点' }
+      let prev = head
+      while (link1 && link2) {
+        if (link1.cid > link2.cid) {
+          prev.next = link2
+          link2 = link2.next
+        } else {
+          prev.next = link1
+          link1 = link1.next
+        }
+        prev = prev.next
+      }
+      prev.next = link1 || link2
+
+      console.log(head.next)
+      return head.next
+    }
+    // margeTwoLink(link1, link2)
+
+    const isCycleLink = head => {
+      if (!head || !head.next) return false
+      let fast = head.next
+      let slow = head
+      while (fast?.cid !== slow.cid) {
+        if (!fast || !fast.next) return false
+        fast = fast.next.next
+        slow = slow.next
+      }
+      return true
+    }
+    // console.log(isCycleLink(link2))
+
+    const reverseLink = link => {
+      let prev = null
+      let curr = link
+      while (curr !== null) {
+        let next = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next
+      }
+      return prev
+    }
+    // console.log(reverseLink(link1))
+
+    const middleNode = link => {
+      let fast = link
+      let slow = link
+      while (fast?.next) {
+        fast = fast.next.next
+        slow = slow.next
+      }
+      return slow
+    }
+    // console.log(middleNode(link1))
+
+    const removeSomeNode = (link, n) => {
+      let prev = { cid: '哨兵节点' }
+      prev.next = link
+
+      let fast = prev
+      let slow = prev
+
+      while (n--) {
+        if (!fast) return null
+        fast = fast.next
+      }
+
+      while (fast?.next) {
+        fast = fast.next
+        slow = slow.next
+      }
+      slow.next = slow.next.next
+      return prev.next
+    }
+    // console.log(removeSomeNode(link1, 3))
+
+    const intersectionLink = (link1, link2) => {
+      if (!link1 && !link2) return null
+      let pa = link1
+      let pb = link2
+
+      while (pa || pb) {
+        if (pa.cid === pb.cid) return pa
+        if (!pa.next && !pb.next) return null //pa、pb同时为 null 代表抹平长度差后的链表没有交点
+        pa = pa.next === null ? link2 : pa.next
+        pb = pb.next === null ? link1 : pb.next
+      }
+    }
+    // console.log(intersectionLink(link1, link4))
+
+    const linkSum = (link1, link2) => {
+      let head = { cid: '哨兵节点' }
+      let curr = head
+      let carry = 0
+      while (link1 || link2) {
+        let cid = 0
+        if (link1) {
+          cid += link1.cid
+          link1 = link1.next
+        }
+        if (link2) {
+          cid += link2.cid
+          link2 = link2.next
+        }
+        cid += carry
+        carry = Math.floor(cid / 10)
+        curr.next = { cid: cid % 10 }
+        curr = curr.next
+      }
+      //处理最后一位进位的情况
+      if (carry) curr.next = { cid: carry }
+      return head.next
+    }
+    console.log(linkSum(link1, link2))
   </script>
 </html>

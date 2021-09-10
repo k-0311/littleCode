@@ -160,7 +160,7 @@
      * *可假定整个链表结构中没有循环。
      * *程序尽量满足 O(n) 时间复杂度，且仅用 O(1) 内存。
      **/
-    const getIntersectionNode = (link1, link2) => {
+    const intersectionLink = (link1, link2) => {
       if (!link1 && !link2) return null
       let pa = link1
       let pb = link2
@@ -172,6 +172,6 @@
         pb = pb.next === null ? link1 : pb.next
       }
     }
-    // console.log(getIntersectionNode(link1, link2))
+    // console.log(intersectionLink(link1, link2))
   </script>
 </html>

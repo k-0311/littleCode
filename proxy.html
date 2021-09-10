@@ -7,6 +7,53 @@
   </head>
   <body></body>
   <script>
+    let user1 = {
+      name: 'John'
+    }
+    function wrap(target) {
+      return new Proxy(target, {
+        /* 你的代码 */
+        get(target, key, receiver) {
+          if (key in target) {
+            return Reflect.get(...arguments)
+          } else {
+            throw new ReferenceError(`property doesn't exist: "${key}"`)
+          }
+        }
+      })
+    }
+    user1 = wrap(user1)
+
+    // console.log(user1.name) // John
+    // console.log(user1.age) // ReferenceError: Property doesn't exist
+
+    let handlers = Symbol('handlers')
+
+    function makeObservable(target) {
+      target[handlers] = []
+      target.observe = function (fn) {
+        this[handlers].push(fn)
+      }
+
+      return new Proxy(target, {
+        set(target, key, value, receiver) {
+          const success = Reflect.set(...arguments)
+          if (success) {
+            target[handlers].forEach(fn => fn(key, value))
+          }
+          return success
+        }
+      })
+    }
+    let user = { a: 1, b: 2 }
+    user = makeObservable(user)
+    user.observe((key, value) => {
+      console.log(`SET ${key}=${value}`)
+    })
+    // console.log('user', user)
+    user.name = 'John' // alerts：设置 name 属性为 John
+    user.a = 'Johnxx' // alerts：设置 name 属性为 John
+
     function enhancedArray(arr) {
       return new Proxy(arr, {
         get(target, property, receiver) {
@@ -46,8 +93,8 @@
         }
       })
 
-    let value = null
     function searchFor(property, target) {
+      let value = null
       for (const key of Object.keys(target)) {
         if (typeof target[key] === 'object') {
           searchFor(property, target[key])

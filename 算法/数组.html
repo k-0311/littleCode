@@ -71,6 +71,25 @@
       return result
     }
     // console.log(threeNumSum([-1, 0, 1, 2, -1, -4]))
+
+    const triangleNumber = nums => {
+      if (!nums || nums.length < 3) return 0
+      let count = 0
+      nums.sort((a, b) => a - b)
+      for (let k = nums.length - 1; k > 1; k--) {
+        let i = 0
+        let j = k - 1
+        while (i < j) {
+          if (nums[i] + nums[j] > nums[k]) {
+            count += j - i //nums[i] + nums[j] 满足条件，因此 i -> j-1 都能构成三角形，且不会重复
+            j--
+          } else {
+            i++
+          }
+        }
+      }
+    }
+
     const flatSetSort = nums => {
       const flat = array => array.flat(Infinity)
       const unique = array => [...new Set(array)]
