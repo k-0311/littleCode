@@ -1,6 +1,33 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 const isOpen = ref(false)
+
+ function sum (count) {
+    if (count < 1) return 0
+    return [
+      {
+        cost: 0.8,
+        min: 0,
+        max: 10
+      },
+      {
+        cost: 0.25,
+        min: 10,
+        max: 50
+      },
+      {
+        cost: 0.2,
+        min: 50,
+        max: 100
+      },
+    ].reduceRight((acc, { cost, min, max }) => {
+      if (count < min) return acc
+      acc += (count - min) * cost
+      count = min
+      return acc
+    }, 0)
+  }
+
 </script>
 
 <template>
