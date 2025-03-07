@@ -65,3 +65,100 @@ const isOpen = ref(false)
   }
 }
 </style>
+
+
+
+const datalist = [
+  {
+    "key": "Free",
+    "tiers": [
+      {
+        "value": 0,
+        "step": 5
+      },
+      {
+        "value": 5,
+        "step": 5
+      }
+    ]
+  },
+  {
+    "key": "Basic",
+    "tiers": [
+      {
+        "value": 10,
+        "step": 40
+      },
+      {
+        "value": 50,
+        "step": 50
+      },
+      {
+        "value": 100,
+        "step": 100
+      }
+    ]
+  },
+  {
+    "key": "Pro",
+    "tiers": [
+      {
+        "value": 500,
+        "step": 100
+      },
+      {
+        "value": 1000,
+        "step": 100
+      }
+    ]
+  },
+  // {
+  //   "key": "Business",
+  //   "tiers": [
+  //     {
+  //       "value": 5000,
+  //       "step": 100
+  //     },
+  //     {
+  //       "value": 10000,
+  //       "step": 100
+  //     }
+  //   ]
+  // },
+  // {
+  //   "key": "Enterprise",
+  //   "tiers": [
+  //     {
+  //       "value": 50000,
+  //       "step": 100
+  //     },
+  //     {
+  //       "value": 100000,
+  //       "step": 100
+  //     }
+  //   ]
+  // }
+]
+
+
+
+function trspoint(list: any[]) {
+  const pf = 100 / list.length
+
+
+  return list.reduce((acc, { tiers }, index) => {
+    const width = (index + 1) * pf
+
+    const _width = acc[acc.length - 1]?.value || 0
+
+    // (width - _width) / tiers.length
+
+    const sub = tiers.map((it, idx) => ({
+      value: (width - _width) / tiers.length * (idx + 1) + _width,
+      step: 1
+    }))
+
+    acc.push(...[...sub, { value: width, step: 1 }].sort())
+    return acc
+  }, [])
+}
